@@ -8,11 +8,20 @@ const {
 
 const nba = require('nba.js').default;
 
+const ScheduleGameTeamIdType = new GraphQLObjectType({
+  name: 'ScheduleGameTeamId',
+  fields: () => ({
+    teamId: { type: GraphQLString }
+  })
+});
+
 const ScheduleGameType = new GraphQLObjectType({
   name: 'ScheduleGame',
   fields: () => ({
     gameId: { type: GraphQLString },
-    startDateEastern: { type: GraphQLString }
+    startDateEastern: { type: GraphQLString },
+    hTeam: { type: ScheduleGameTeamIdType },
+    vTeam: { type: ScheduleGameTeamIdType }
   })
 });
 
@@ -77,7 +86,22 @@ const RootQuery = new GraphQLObjectType({
           .schedule({
             year: args.year
           })
-          .then(res => res)
+          .then(res => {
+            var game = res.league.standard;
+
+            //Filters out pre-season games, where gameId's are less than 20000000
+            var currentSeasonGame = game.filter(x => {
+              return x.gameId > 20000000;
+            });
+
+            var scheduleObj = {
+              league: {
+                standard: currentSeasonGame
+              }
+            };
+
+            return scheduleObj;
+          })
           .catch(err => console.log(err));
       }
     }
