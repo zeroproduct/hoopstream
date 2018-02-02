@@ -8,6 +8,28 @@ const {
 
 const nba = require('nba.js').default;
 
+const ScheduleGameType = new GraphQLObjectType({
+  name: 'ScheduleGame',
+  fields: () => ({
+    gameId: { type: GraphQLString },
+    startDateEastern: { type: GraphQLString }
+  })
+});
+
+const StandardType = new GraphQLObjectType({
+  name: 'Standard',
+  fields: () => ({
+    standard: { type: new GraphQLList(ScheduleGameType) }
+  })
+});
+
+const ScheduleType = new GraphQLObjectType({
+  name: 'Schedule',
+  fields: () => ({
+    league: { type: StandardType }
+  })
+});
+
 const PlaysType = new GraphQLObjectType({
   name: 'Plays',
   fields: () => ({
@@ -40,6 +62,20 @@ const RootQuery = new GraphQLObjectType({
             date: args.date,
             gameId: args.gameId,
             period: args.period
+          })
+          .then(res => res)
+          .catch(err => console.log(err));
+      }
+    },
+    schedule: {
+      type: ScheduleType,
+      args: {
+        year: { type: GraphQLString }
+      },
+      resolve(parentValue, args) {
+        return nba.data
+          .schedule({
+            year: args.year
           })
           .then(res => res)
           .catch(err => console.log(err));
