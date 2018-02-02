@@ -7,7 +7,25 @@ import './App.css';
 import { formatTeamId } from './utils/index';
 
 class App extends Component {
-  state = {};
+  state = {
+    gameDate: '20180201',
+    currentGames: []
+  };
+
+  getGameIdFromDate() {
+    var gamesArr = [];
+
+    this.props.scheduleQuery.schedule.league.standard.filter(games => {
+      if (games.startDateEastern === this.state.gameDate) {
+        gamesArr.push(games);
+        // console.log(gamesArr);
+      }
+    });
+
+    this.setState({
+      currentGames: gamesArr
+    });
+  }
 
   renderPlays() {
     return this.props.leadTrackerQuery.leadTracker.plays.map(play => {
@@ -19,14 +37,30 @@ class App extends Component {
     });
   }
 
+  handleInputChange(e) {
+    if (e.target.id === 'date') {
+      this.setState({
+        gameDate: e.target.value
+      });
+    }
+  }
+
   render() {
-    if (this.props.leadTrackerQuery.loading) {
+    if (this.props.scheduleQuery.loading) {
       return <div />;
     }
 
     return (
       <div className="App">
         {console.log(this.props)}
+        {console.log(this.state.currentGames)}
+        <button onClick={() => this.getGameIdFromDate()}>Game</button>
+        <input
+          id="date"
+          onChange={this.handleInputChange.bind(this)}
+          type="text"
+          placeholder="Enter a date (YYYYMMDD)"
+        />
         <div>
           <ul>
             {this.renderPlays()}
