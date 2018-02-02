@@ -73,7 +73,7 @@ class App extends Component {
 
 const getLeadTracker = gql`
   {
-    leadTracker(date: "20180201", gameId: "0021700762", period: "2") {
+    leadTracker(date: "20180201", gameId: "0021700762", period: "1") {
       plays {
         clock
         points
