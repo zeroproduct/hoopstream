@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import gql from 'graphql-tag';
 import { graphql, compose } from 'react-apollo';
-import logo from './logo.svg';
+import { Link, withRouter } from 'react-router-dom';
 import './App.css';
 
 import { formatTeamId } from './utils/index';
@@ -37,6 +37,28 @@ class App extends Component {
     });
   }
 
+  renderCurrentGames() {
+    return this.state.currentGames.map(game => {
+      return (
+        <li key={game.gameId}>
+          <Link
+            to={{
+              pathname: `/g/${game.gameId}`,
+              game: {
+                gameDate: this.state.gameDate,
+                hTeam: game.hTeam.teamId,
+                vTeam: game.vTeam.teamId
+              }
+            }}
+          >
+            {formatTeamId(game.hTeam.teamId)} vs.{' '}
+            {formatTeamId(game.vTeam.teamId)}
+          </Link>
+        </li>
+      );
+    });
+  }
+
   handleInputChange(e) {
     if (e.target.id === 'date') {
       this.setState({
@@ -54,16 +76,16 @@ class App extends Component {
       <div className="App">
         {console.log(this.props)}
         {console.log(this.state.currentGames)}
-        <button onClick={() => this.getGameIdFromDate()}>Game</button>
         <input
           id="date"
           onChange={this.handleInputChange.bind(this)}
           type="text"
           placeholder="Enter a date (YYYYMMDD)"
         />
+        <button onClick={() => this.getGameIdFromDate()}>Search</button>
         <div>
           <ul>
-            {this.renderPlays()}
+            {this.renderCurrentGames()}
           </ul>
         </div>
       </div>
@@ -71,17 +93,17 @@ class App extends Component {
   }
 }
 
-const getLeadTracker = gql`
-  {
-    leadTracker(date: "20180201", gameId: "0021700762", period: "1") {
-      plays {
-        clock
-        points
-        leadTeamId
-      }
-    }
-  }
-`;
+// const getLeadTracker = gql`
+//   {
+//     leadTracker(date: "20180201", gameId: "0021700762", period: "1") {
+//       plays {
+//         clock
+//         points
+//         leadTeamId
+//       }
+//     }
+//   }
+// `;
 
 const getSchedule = gql`
   {
@@ -101,8 +123,10 @@ const getSchedule = gql`
     }
   }
 `;
+//
+// export default compose(
+//   graphql(getLeadTracker, { name: 'leadTrackerQuery' }),
+//   graphql(getSchedule, { name: 'scheduleQuery' })
+// )(App);
 
-export default compose(
-  graphql(getLeadTracker, { name: 'leadTrackerQuery' }),
-  graphql(getSchedule, { name: 'scheduleQuery' })
-)(App);
+export default graphql(getSchedule, { name: 'scheduleQuery' })(withRouter(App));
