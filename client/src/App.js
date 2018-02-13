@@ -43,7 +43,8 @@ class App extends Component {
         <li key={game.gameId}>
           <Link
             to={{
-              pathname: `/g/${this.state.gameDate};${game.gameId}`,
+              pathname: `/g/${this.state.gameDate}_${game.hTeam.teamId}_${game
+                .vTeam.teamId}_${game.gameId}`,
               game: {
                 gameDate: this.state.gameDate,
                 hTeam: game.hTeam.teamId,

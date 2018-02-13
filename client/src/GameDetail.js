@@ -12,7 +12,9 @@ class GameDetail extends Component {
   // };
 
   render() {
-    const { gameDate, hTeam, vTeam } = this.props.location.game;
+    const gameDate = this.props.match.params.id.split('_')[0];
+    const hTeam = this.props.match.params.id.split('_')[1];
+    const vTeam = this.props.match.params.id.split('_')[2];
 
     return (
       <div>
@@ -44,8 +46,8 @@ export default graphql(getLeadTracker, {
   name: 'leadTrackerQuery',
   options: props => ({
     variables: {
-      date: props.match.params.id.split(';')[0],
-      gameId: props.match.params.id.split(';')[1],
+      date: props.match.params.id.split('_')[0],
+      gameId: props.match.params.id.split('_')[3],
       period: '1'
     }
   })
