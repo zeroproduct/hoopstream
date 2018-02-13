@@ -44,8 +44,8 @@ export default graphql(getLeadTracker, {
   name: 'leadTrackerQuery',
   options: props => ({
     variables: {
-      date: props.location.game.gameDate,
-      gameId: props.match.params.id,
+      date: props.match.params.id.split(';')[0],
+      gameId: props.match.params.id.split(';')[1],
       period: '1'
     }
   })
