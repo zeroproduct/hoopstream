@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
 import gql from 'graphql-tag';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 // import { withRouter } from 'react-router';
 
 import { formatTeamId } from './utils/index';
 
 class GameDetail extends Component {
-  // state = {
-  //   date: this.props.location.game.gameDate,
-  //   gameId: this.props.match.params.id
-  // };
-
   render() {
     const gameDate = this.props.match.params.id.split('_')[0];
     const hTeam = this.props.match.params.id.split('_')[1];
@@ -42,15 +37,47 @@ const getLeadTracker = gql`
   }
 `;
 
-export default graphql(getLeadTracker, {
-  name: 'leadTrackerQuery',
-  options: props => ({
-    variables: {
-      date: props.match.params.id.split('_')[0],
-      gameId: props.match.params.id.split('_')[3],
-      period: '1'
-    }
+export default compose(
+  graphql(getLeadTracker, {
+    name: 'leadTrackerQ1',
+    options: props => ({
+      variables: {
+        date: props.match.params.id.split('_')[0],
+        gameId: props.match.params.id.split('_')[3],
+        period: '1'
+      }
+    })
+  }),
+  graphql(getLeadTracker, {
+    name: 'leadTrackerQ2',
+    options: props => ({
+      variables: {
+        date: props.match.params.id.split('_')[0],
+        gameId: props.match.params.id.split('_')[3],
+        period: '2'
+      }
+    })
+  }),
+  graphql(getLeadTracker, {
+    name: 'leadTrackerQ3',
+    options: props => ({
+      variables: {
+        date: props.match.params.id.split('_')[0],
+        gameId: props.match.params.id.split('_')[3],
+        period: '3'
+      }
+    })
+  }),
+  graphql(getLeadTracker, {
+    name: 'leadTrackerQ4',
+    options: props => ({
+      variables: {
+        date: props.match.params.id.split('_')[0],
+        gameId: props.match.params.id.split('_')[3],
+        period: '4'
+      }
+    })
   })
-})(GameDetail);
+)(GameDetail);
 
 // export default GameDetail;
