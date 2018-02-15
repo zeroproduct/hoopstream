@@ -3,23 +3,37 @@ import gql from 'graphql-tag';
 import { graphql, compose } from 'react-apollo';
 // import { withRouter } from 'react-router';
 
+import PointDiffChart from './PointDiffChart';
+
 import { formatTeamId } from './utils/index';
 
 class GameDetail extends Component {
+  state = {};
+
   render() {
     const gameDate = this.props.match.params.id.split('_')[0];
     const hTeam = this.props.match.params.id.split('_')[1];
     const vTeam = this.props.match.params.id.split('_')[2];
 
+    if (this.props.leadTrackerQ1 === null) {
+      return <div />;
+    }
+
     return (
       <div>
-        {console.log(this.props)}
+        {/* {console.log(this.props)} */}
         <h1>
           {gameDate}
         </h1>
         <p>
           {formatTeamId(hTeam)} vs. {formatTeamId(vTeam)}
         </p>
+        <PointDiffChart
+          quarterOne={this.props.leadTrackerQ1.leadTracker}
+          quarterTwo={this.props.leadTrackerQ2.leadTracker}
+          quarterThree={this.props.leadTrackerQ3.leadTracker}
+          quarterFour={this.props.leadTrackerQ4.leadTracker}
+        />
       </div>
     );
   }
