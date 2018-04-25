@@ -6,4 +6,4 @@ The idea behind this project is to show point differentials for specific games. 
 
 ## Why GraphQL?
 
-REST API's have a set of endpoints that each return fixed data, whereas GraphQL has a single endpoint that returns flexible data. This is critical because the current NBA API Endpoints return massive objects, which will cause longer load times for clients. Generating GraphQL schemas on the server allows us to retrieve only the necessary data on our frontend.
+REST API's have a set of endpoints that each return fixed data, whereas GraphQL has a single endpoint that returns flexible data. This is critical because the current NBA API Endpoints return massive objects, which will cause longer load times for clients. Generating GraphQL schemas on the server allows us to retrieve only the necessary data on our frontend. GraphQL also allows for subscriptions, meaning we can update our frontend data in real time. This will allow us to see live game score updates.
