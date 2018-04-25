@@ -1,0 +1,16 @@
+.block {
+  -o-transition: .15s;
+  -ms-transition: .15s;
+  -moz-transition: .15s;
+  -webkit-transition: .15s;
+  transition: .15s;
+}
+
+.block:hover {
+  -o-transition: .15s;
+  -ms-transition: .15s;
+  -moz-transition: .15s;
+  -webkit-transition: .15s;
+  transition: .15s;
+  background-color: #ffa39e !important;
+}

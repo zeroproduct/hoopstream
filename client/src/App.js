@@ -1,38 +1,51 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import gql from 'graphql-tag';
-import { graphql, compose } from 'react-apollo';
-import { Link, withRouter } from 'react-router-dom';
+import { graphql } from 'react-apollo';
+import { Link } from 'react-router-dom';
+import * as moment from 'moment';
+import Block from './Block';
+import LoadingScreen from './LoadingScreen';
 import './App.css';
 
 import { formatTeamId } from './utils/index';
 
 class App extends Component {
   state = {
-    gameDate: '20180201',
-    currentGames: []
+    currentGames: [],
+    groupedGames: {},
+    detailDate: 'DEFAULT',
+    detailNumOfGames: ''
   };
 
-  getGameIdFromDate() {
-    var gamesArr = [];
-
-    this.props.scheduleQuery.schedule.league.standard.filter(games => {
-      if (games.startDateEastern === this.state.gameDate) {
-        gamesArr.push(games);
-        // console.log(gamesArr);
-      }
-    });
-
-    this.setState({
-      currentGames: gamesArr
-    });
+  renderGames() {
+    const groupedGames = _.groupBy(
+      this.props.scheduleQuery.schedule.league.standard,
+      game => game.startDateEastern
+    );
+    this.setState({ groupedGames });
   }
 
-  renderPlays() {
-    return this.props.leadTrackerQuery.leadTracker.plays.map(play => {
+  renderBlocks() {
+    return Object.entries(this.state.groupedGames).map(([key, value]) => {
+      const dayOfWeek = moment(key).format('ddd').toLowerCase();
+      const month = moment(key).format('MMM').toLowerCase();
       return (
-        <li>
-          Time: {play.clock}, Points: {play.points}, Team:{formatTeamId(play.leadTeamId)}
-        </li>
+        <Block
+          key={key}
+          blockStyle={`${dayOfWeek} ${month} block`}
+          blockHover={() =>
+            this.setState({
+              detailDate: key,
+              detailNumOfGames: value.length
+            })}
+          blockClick={() =>
+            this.setState({
+              currentGames: value
+            })}
+          date={key}
+          game={value.length}
+        />
       );
     });
   }
@@ -41,12 +54,14 @@ class App extends Component {
     return this.state.currentGames.map(game => {
       return (
         <li key={game.gameId}>
+          {console.log(game)}
           <Link
+            style={{ color: '#ffa39e' }}
             to={{
-              pathname: `/g/${this.state.gameDate}_${game.hTeam.teamId}_${game
+              pathname: `/g/${game.startDateEastern}_${game.hTeam.teamId}_${game
                 .vTeam.teamId}_${game.gameId}`,
               game: {
-                gameDate: this.state.gameDate,
+                gameDate: game.startDateEastern,
                 hTeam: game.hTeam.teamId,
                 vTeam: game.vTeam.teamId
               }
@@ -60,51 +75,53 @@ class App extends Component {
     });
   }
 
-  handleInputChange(e) {
-    if (e.target.id === 'date') {
-      this.setState({
-        gameDate: e.target.value
-      });
-    }
-  }
-
   render() {
     if (this.props.scheduleQuery.loading) {
-      return <div />;
+      return <LoadingScreen />;
     }
 
     return (
       <div className="App">
-        {console.log(this.props)}
         {console.log(this.state.currentGames)}
-        <input
-          id="date"
-          onChange={this.handleInputChange.bind(this)}
-          type="text"
-          placeholder="Enter a date (YYYYMMDD)"
-        />
-        <button onClick={() => this.getGameIdFromDate()}>Search</button>
-        <div>
-          <ul>
+        <div className="game-grid">
+          <button className="search-button" onClick={() => this.renderGames()}>
+            Search
+          </button>
+          <div className="block-grid">
+            <div className="sun date-header">SUN</div>
+            <div className="mon date-header">MON</div>
+            <div className="tue date-header">TUE</div>
+            <div className="wed date-header">WED</div>
+            <div className="thu date-header">THU</div>
+            <div className="fri date-header">FRI</div>
+            <div className="sat date-header">SAT</div>
+            {this.renderBlocks()}
+          </div>
+        </div>
+        <div className="list-of-games">
+          <div className="date">
+            <span style={{ fontSize: '56px' }}>
+              {this.state.detailDate === 'DEFAULT'
+                ? ''
+                : moment(this.state.detailDate)
+                    .format('MMMM Do YYYY')
+                    .toUpperCase()}
+            </span>
+            <br />
+            <span style={{ fontSize: '24px' }}>
+              {this.state.detailDate === 'DEFAULT'
+                ? ''
+                : moment(this.state.detailDate).format('dddd').toUpperCase()}
+            </span>
+          </div>
+          <div className="current-games">
             {this.renderCurrentGames()}
-          </ul>
+          </div>
         </div>
       </div>
     );
   }
 }
-
-// const getLeadTracker = gql`
-//   {
-//     leadTracker(date: "20180201", gameId: "0021700762", period: "1") {
-//       plays {
-//         clock
-//         points
-//         leadTeamId
-//       }
-//     }
-//   }
-// `;
 
 const getSchedule = gql`
   {
@@ -124,10 +141,5 @@ const getSchedule = gql`
     }
   }
 `;
-//
-// export default compose(
-//   graphql(getLeadTracker, { name: 'leadTrackerQuery' }),
-//   graphql(getSchedule, { name: 'scheduleQuery' })
-// )(App);
 
-export default graphql(getSchedule, { name: 'scheduleQuery' })(withRouter(App));
+export default graphql(getSchedule, { name: 'scheduleQuery' })(App);

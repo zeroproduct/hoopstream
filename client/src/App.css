@@ -1,28 +1,114 @@
 .App {
   text-align: center;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "game-grid list-of-games";
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.block {
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
+.current-games {
+  padding-top: 16px;
+}
+
+.date-header {
+  padding-top: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  width: 25px;
+  justify-self: center;
+  align-self: end;
+}
+
+.search-button {
+  font-family: 'Rajdhani';
+  margin-top: 8px;
+  width: 193px;
+  height: 32px;
+  font-size: 18px;
+  border: none;
+  color: white;
+  background-color: black;
+  cursor: pointer;
+}
+
+.date-of-games {
+  grid-area: date-of-games;
+  justify-self: center;
+  background: black !important;
+  /* padding-top: 64px; */
+}
+
+.date {
+  /* position: fixed; */
+  /* align-self: center; */
+}
+
+.list-of-games {
+  margin: 0;
+  padding: 3%;
+  grid-area: list-of-games;
+  list-style: none;
+  background: black;
   color: white;
 }
 
-.App-title {
-  font-size: 1.5em;
+.game-grid {
+  grid-area: game-grid;
+  overflow: auto;
+  padding: 3%;
 }
 
-.App-intro {
-  font-size: large;
+.game-grid::-webkit-scrollbar {
+  display: none;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.block-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 25px);
+  grid-auto-flow: row;
+  grid-template-areas: "oct" "nov" "dec" "jan" "feb" "mar" "apr";
+  grid-gap: 3px;
+  justify-content: center;
+}
+
+.block-grid div {
+  cursor: pointer;
+}
+
+.sun {
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+
+.mon {
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+.tue {
+  grid-column-start: 3;
+  grid-column-end: 4;
+}
+
+.wed {
+  grid-column-start: 4;
+  grid-column-end: 5;
+}
+
+.thu {
+  grid-column-start: 5;
+  grid-column-end: 6;
+}
+
+.fri {
+  grid-column-start: 6;
+  grid-column-end: 7;
+}
+
+.sat {
+  grid-column-start: 7;
+  grid-column-end: 8;
 }

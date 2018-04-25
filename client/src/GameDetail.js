@@ -21,7 +21,7 @@ class GameDetail extends Component {
 
     return (
       <div>
-        {/* {console.log(this.props)} */}
+        {console.log(this.props)}
         <h1>
           {gameDate}
         </h1>
