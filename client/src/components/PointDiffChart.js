@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 
-import { formatTeamId } from './utils/index';
+import { formatTeamId } from '../utils/index';
 
 class PointDiffChart extends Component {
   renderPoints() {
     return this.props.quarterOne.plays.map(point => {
       return (
-        <li>
+        <li key={`${point.clock}${point.points}`}>
           <div>
-            {point.clock} - {point.points} - {formatTeamId(point.leadTeamId)}
+            {point.clock} - {point.points} - {formatTeamId(point.leadTeamId)[0]}
           </div>
         </li>
       );

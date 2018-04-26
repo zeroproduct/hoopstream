@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import gql from 'graphql-tag';
 import { graphql, compose } from 'react-apollo';
-// import { withRouter } from 'react-router';
+import * as moment from 'moment';
 
 import PointDiffChart from './PointDiffChart';
 
-import { formatTeamId } from './utils/index';
+import { formatTeamId, getTeamColors } from '../utils/index';
 
 class GameDetail extends Component {
   state = {};
@@ -20,14 +20,38 @@ class GameDetail extends Component {
     }
 
     return (
-      <div>
-        {console.log(this.props)}
-        <h1>
-          {gameDate}
-        </h1>
-        <p>
-          {formatTeamId(hTeam)} vs. {formatTeamId(vTeam)}
-        </p>
+      <div className="game-detail">
+        <div style={{ textAlign: 'center' }} className="header">
+          <span style={{ fontSize: 48 }}>
+            {moment(gameDate).format('dddd, MMM d YYYY').toUpperCase()}
+          </span>
+          <span
+            style={{
+              width: '480px',
+              margin: '0 auto',
+              display: 'block',
+              fontSize: 24
+            }}
+          >
+            <div
+              style={{
+                color: getTeamColors(hTeam)[1],
+                backgroundColor: getTeamColors(hTeam)[0]
+              }}
+            >
+              {formatTeamId(hTeam)}
+            </div>
+            vs.
+            <div
+              style={{
+                color: getTeamColors(vTeam)[1],
+                backgroundColor: getTeamColors(vTeam)[0]
+              }}
+            >
+              {formatTeamId(vTeam)}
+            </div>
+          </span>
+        </div>
         <PointDiffChart
           quarterOne={this.props.leadTrackerQ1.leadTracker}
           quarterTwo={this.props.leadTrackerQ2.leadTracker}
@@ -93,5 +117,3 @@ export default compose(
     })
   })
 )(GameDetail);
-
-// export default GameDetail;

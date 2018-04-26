@@ -10,7 +10,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import './index.css';
 import App from './App';
-import GameDetail from './GameDetail';
+import GameDetail from './components/GameDetail';
 
 const client = new ApolloClient({
   link: new HttpLink(),
